@@ -492,7 +492,7 @@ static VALUE rb_mysql_result_fetch_row_stmt(VALUE self, MYSQL_FIELD * fields, co
         }
         case MYSQL_TYPE_DECIMAL:      // char[]
         case MYSQL_TYPE_NEWDECIMAL:   // char[]
-          val = rb_funcall(cBigDecimal, intern_new, 1, rb_str_new(result_buffer->buffer, *(result_buffer->length)));
+          val = rb_funcall(rb_mKernel, intern_BigDecimal, 1, rb_str_new(result_buffer->buffer, *(result_buffer->length)));
           break;
         case MYSQL_TYPE_STRING:       // char[]
         case MYSQL_TYPE_VAR_STRING:   // char[]
@@ -602,9 +602,9 @@ static VALUE rb_mysql_result_fetch_row(VALUE self, MYSQL_FIELD * fields, const r
           if (fields[i].decimals == 0) {
             val = rb_cstr2inum(row[i], 10);
           } else if (strtod(row[i], NULL) == 0.000000){
-            val = rb_funcall(cBigDecimal, intern_new, 1, opt_decimal_zero);
+            val = rb_funcall(rb_mKernel, intern_BigDecimal, 1, opt_decimal_zero);
           }else{
-            val = rb_funcall(cBigDecimal, intern_new, 1, rb_str_new(row[i], fieldLengths[i]));
+            val = rb_funcall(rb_mKernel, intern_BigDecimal, 1, rb_str_new(row[i], fieldLengths[i]));
           }
           break;
         case MYSQL_TYPE_FLOAT:      /* FLOAT field */
@@ -1036,6 +1036,7 @@ void init_mysql2_result() {
   intern_local_offset = rb_intern("local_offset");
   intern_civil        = rb_intern("civil");
   intern_new_offset   = rb_intern("new_offset");
+  intern_BigDecimal   = rb_intern("BigDecimal");
 
   sym_symbolize_keys  = ID2SYM(rb_intern("symbolize_keys"));
   sym_as              = ID2SYM(rb_intern("as"));
